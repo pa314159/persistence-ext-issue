@@ -1,0 +1,28 @@
+apply( plugin: 'io.spring.dependency-management' )
+
+dependencyManagement {
+	imports {
+		mavenBom( 'org.jboss.arquillian:arquillian-bom:1.1.11.Final' )
+		mavenBom( 'org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-bom:2.2.2' )
+	}
+
+	dependencies {
+		dependency( 'javax:javaee-api:7.0' )
+		dependency( 'commons-io:commons-io:2.5' )
+		dependency( 'junit:junit:4.12' )
+
+		dependencySet( group: 'org.jboss.arquillian.container', version: '1.0.0.CR4' ) {
+			entry( 'arquillian-glassfish-managed-3.1' )
+			entry( 'arquillian-glassfish-remote-3.1' )
+		}
+		dependencySet( group: 'org.wildfly.arquillian', version: '2.0.0.Final' ) {
+			entry( 'wildfly-arquillian-container-managed' )
+			entry( 'wildfly-arquillian-container-remote' )
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+

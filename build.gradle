@@ -1,0 +1,134 @@
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies { classpath( 'io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE' ) }
+}
+
+apply( plugin: 'java' )
+apply( plugin: 'eclipse' )
+apply( from: 'dependencies.gradle' )
+
+sourceSets.all {
+	output.resourcesDir = output.classesDir
+
+	dependencies.add( compileOnlyConfigurationName, 'javax:javaee-api' )
+}
+
+sourceCompatibility = '1.8'
+
+dependencies {
+	compile( 'junit:junit' )
+	compile( 'commons-io:commons-io' )
+
+	compile( 'org.jboss.arquillian.junit:arquillian-junit-container' )
+
+	runtime( configurations.compileOnly )
+	runtime( 'org.jboss.arquillian.protocol:arquillian-protocol-servlet' )
+}
+
+eclipse {
+	classpath { defaultOutputDir = file("$buildDir/classes/default") }
+
+	project {
+		natures( 'org.eclipse.buildship.core.gradleprojectnature' )
+		buildCommand( 'org.eclipse.buildship.core.gradleprojectbuilder' )
+	}
+}
+
+defaultTasks( 'build' )
+
+test { enabled = false }
+
+task( 'test-report', type: TestReport ) { rep ->
+	destinationDir = file( "$reportsDir/all-tests" )
+
+	tasks.withType( Test ) {
+		rep.dependsOn( it )
+		reportOn( it )
+	}
+}
+
+tasks.withType( Test ) {
+	dependsOn( classes )
+	outputs.upToDateWhen { false }
+	
+	include( '**/*Test.class' )
+	
+	testClassesDir = sourceSets.main.output.classesDir
+	classpath = sourceSets.main.output
+	
+	testLogging.showStandardStreams = true
+	ignoreFailures = true
+	
+	reports.html.enabled = false
+	reports.junitXml.destination = file( "$testResultsDir/xml/$it.name" )
+}
+
+check.dependsOn( 'test-report' )
+
+// wildfly
+
+configurations {
+	wildflyDist
+	wildflyRuntime
+}
+
+dependencies {
+	wildflyDist( 'org.wildfly:wildfly-dist:10.0.0.Final@zip' )
+
+	wildflyRuntime( configurations.runtime )
+	wildflyRuntime( 'org.wildfly.arquillian:wildfly-arquillian-container-managed' )
+}
+
+task( 'wildfly-dist', type: Copy ) {
+	from( zipTree( configurations.wildflyDist.singleFile ) )
+	into( buildDir )
+}
+
+task( 'wildfly-test', type: Test ) {
+	dependsOn( 'wildfly-dist' )
+
+	systemProperty( 'arquillian.launch', 'wildfly-dist' )
+
+	classpath += configurations.wildflyRuntime
+}
+
+// glassfish
+
+configurations {
+	glassfishDist
+	glassfishRuntime
+}
+
+dependencies {
+	glassfishDist( 'fish.payara.distributions:payara:4.1.1.162@zip' )
+
+	glassfishRuntime( configurations.testRuntime )
+	glassfishRuntime( 'org.jboss.arquillian.container:arquillian-glassfish-managed-3.1' )
+}
+
+task( 'glassfish-dist', type: Copy ) {
+	from( zipTree( configurations.glassfishDist.singleFile ) )
+	into( buildDir )
+}
+
+task( 'glassfish-test', type: Test ) {
+	dependsOn( 'glassfish-dist' )
+
+	systemProperty( 'arquillian.launch', 'glassfish-dist' )
+
+	classpath += configurations.glassfishRuntime
+}
+
+// extra configuration
+
+eclipse {
+	classpath {
+		plusConfigurations += [
+//			configurations.wildflyRuntime,
+			configurations.glassfishRuntime,
+		]
+	}
+}
