@@ -19,6 +19,10 @@ dependencyManagement {
 			entry( 'wildfly-arquillian-container-managed' )
 			entry( 'wildfly-arquillian-container-remote' )
 		}
+		dependencySet( group: 'org.apache.deltaspike.core', version: '1.7.0' ) {
+			entry( 'deltaspike-core-api' )
+			entry( 'deltaspike-core-impl' )
+		}
 	}
 }
 

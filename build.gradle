@@ -21,8 +21,8 @@ sourceCompatibility = '1.8'
 dependencies {
 	compile( 'junit:junit' )
 	compile( 'commons-io:commons-io' )
-
 	compile( 'org.jboss.arquillian.junit:arquillian-junit-container' )
+	compile( 'org.apache.deltaspike.core:deltaspike-core-api' )
 
 	runtime( configurations.compileOnly )
 	runtime( 'org.jboss.arquillian.protocol:arquillian-protocol-servlet' )

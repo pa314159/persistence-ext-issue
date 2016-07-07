@@ -10,32 +10,62 @@ implements BusinessBean
 {
 
 	@Inject
-	private SomeBean1 bean1;
+	private RegularBean regularBean;
 
 	@Inject
-	private SomeBean2 bean2;
+	private BeforeBeanDiscoveryBean bbdBean;
+
+	@Inject
+	private AfterTypeDiscoveryBean atdBean;
+
+	@Inject
+	private AfterBeanDiscoveryBean abdBean;
 
 	@Override
-	public void bean1_em1()
+	public void regular_em1()
 	{
-		this.bean1.em1();
+		this.regularBean.em1();
 	}
 
 	@Override
-	public void bean1_em2()
+	public void regular_em2()
 	{
-		this.bean1.em2();
+		this.regularBean.em2();
 	}
 
 	@Override
-	public void bean2_em1()
+	public void beforeBeanDiscovery_em1()
 	{
-		this.bean2.em1();
+		this.atdBean.em1();
 	}
 
 	@Override
-	public void bean2_em2()
+	public void beforeBeanDiscovery_em2()
 	{
-		this.bean2.em2();
+		this.atdBean.em2();
+	}
+
+	@Override
+	public void afterTypeDiscovery_em1()
+	{
+		this.bbdBean.em1();
+	}
+
+	@Override
+	public void afterTypeDiscovery_em2()
+	{
+		this.bbdBean.em2();
+	}
+
+	@Override
+	public void afterBeanDiscovery_em1()
+	{
+		this.abdBean.em1();
+	}
+
+	@Override
+	public void afterBeanDiscovery_em2()
+	{
+		this.abdBean.em2();
 	}
 }

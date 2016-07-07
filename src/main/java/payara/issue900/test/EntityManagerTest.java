@@ -8,6 +8,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.deltaspike.core.util.bean.BeanBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -19,16 +20,19 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import payara.issue900.beans.AfterBeanDiscoveryBean;
+import payara.issue900.beans.AfterTypeDiscoveryBean;
+import payara.issue900.beans.BeforeBeanDiscoveryBean;
 import payara.issue900.beans.BusinessBean;
 import payara.issue900.beans.BusinessBeanImpl;
-import payara.issue900.beans.SomeBean1;
-import payara.issue900.beans.SomeBean2;
-import payara.issue900.extension.SomeExtension;
+import payara.issue900.beans.RegularBean;
+import payara.issue900.extension.BeanExtension;
 import payara.issue900.model.Entity1;
 import payara.issue900.model.Entity2;
 
 @RunWith( Arquillian.class )
 public class EntityManagerTest
+implements BusinessBean
 {
 
 	@Deployment
@@ -52,43 +56,79 @@ public class EntityManagerTest
 
 		// archive containing SomeBean1 and extra business
 		final JavaArchive bsn = ShrinkWrap.create( JavaArchive.class, "beans.jar" )
-			.addClasses( BusinessBean.class, BusinessBeanImpl.class, SomeBean1.class )
+			.addClasses( BusinessBean.class, BusinessBeanImpl.class, RegularBean.class )
 			.addAsManifestResource( new ClassLoaderAsset( "beans-annotated.xml" ), "beans.xml" );
 
 		// the CDI extension that provides SomeBean2
 		final JavaArchive ext = ShrinkWrap.create( JavaArchive.class, "extension.jar" )
-			.addClasses( SomeExtension.class, SomeBean2.class )
-			.addAsManifestResource( new StringAsset( SomeExtension.class.getName() ), "services/" + Extension.class.getName() );
+			.addClass( BeanExtension.class )
+			.addClasses( BeforeBeanDiscoveryBean.class, AfterTypeDiscoveryBean.class, AfterBeanDiscoveryBean.class )
+			.addAsManifestResource( new StringAsset( BeanExtension.class.getName() ), "services/" + Extension.class.getName() );
+
+		final JavaArchive deltaSpike = ShrinkWrap.create( JavaArchive.class, "deltaspike.jar" )
+			.addPackages( true, "org.apache.deltaspike.core" );
 
 		return ShrinkWrap.create( WebArchive.class )
 			.addAsWebInfResource( new ClassLoaderAsset( "beans-annotated.xml" ), "beans.xml" )
-			.addAsLibraries( mod1, mod2, ext, bsn );
+			.addAsLibraries( mod1, mod2, ext, bsn, deltaSpike );
 	}
 
 	@Inject
 	private BusinessBean bean;
 
+	@Override
 	@Test
-	public void bean1_em1()
+	public void regular_em1()
 	{
-		this.bean.bean1_em1();
+		this.bean.regular_em1();
 	}
 
+	@Override
 	@Test
-	public void bean1_em2()
+	public void regular_em2()
 	{
-		this.bean.bean1_em2();
+		this.bean.regular_em2();
 	}
 
+	@Override
 	@Test
-	public void bean2_em1()
+	public void beforeBeanDiscovery_em1()
 	{
-		this.bean.bean2_em1();
+		this.bean.beforeBeanDiscovery_em1();
 	}
 
+	@Override
 	@Test
-	public void bean2_em2()
+	public void beforeBeanDiscovery_em2()
 	{
-		this.bean.bean2_em2();
+		this.bean.beforeBeanDiscovery_em2();
+	}
+
+	@Override
+	@Test
+	public void afterTypeDiscovery_em1()
+	{
+		this.bean.afterTypeDiscovery_em1();
+	}
+
+	@Override
+	@Test
+	public void afterTypeDiscovery_em2()
+	{
+		this.bean.afterTypeDiscovery_em2();
+	}
+
+	@Override
+	@Test
+	public void afterBeanDiscovery_em1()
+	{
+		this.bean.afterBeanDiscovery_em1();
+	}
+
+	@Override
+	@Test
+	public void afterBeanDiscovery_em2()
+	{
+		this.bean.afterBeanDiscovery_em2();
 	}
 }

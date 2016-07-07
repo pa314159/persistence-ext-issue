@@ -4,18 +4,16 @@ package payara.issue900.beans;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertNotNull;
 
-@Dependent
-public class SomeBean1
+public class AfterBeanDiscoveryBean
 {
 
-	private static final Logger L = Logger.getLogger( "SomeBean1" );
+	private static final Logger L = Logger.getLogger( AfterBeanDiscoveryBean.class.getSimpleName() );
 
 	@PersistenceContext( unitName = "PU1" )
 	private EntityManager em1;

@@ -3,13 +3,15 @@
 
 ## Description
 
-The project contains two beans `SomeBean1` and `SomeBean2` in which an EntityManager is injected.
+The project contains few beans in which an EntityManager is injected.
 
-The first bean is provided via the normal CDI mechanism, while the second bean is provided by a CDI extension in the `AfterTypeDiscovery` phase.
+The `RegularBean` bean is provided via the normal CDI mechanism, others are provided by a CDI extension
+in the `BeforeBeanDiscovery`, `AfterTypeDiscovery` phases.
 
-Injection of EntityManager in `SomeBean2` doesn't work on Payara-4.1.1.162, but works on Wildfly-10
+Injections of EntityManager in beans provided by the CDI extension don't work on Payara-4.1.1.162; they
+work on Wildfly-10
 
-Arquillian tests are provided for both applications servers.
+Arquillian tests are provided for both Payara and Wildfly.
 
 ## Running the test
 

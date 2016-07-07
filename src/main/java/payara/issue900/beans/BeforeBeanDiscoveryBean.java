@@ -10,10 +10,10 @@ import javax.persistence.PersistenceContext;
 import static java.lang.String.format;
 import static org.junit.Assert.assertNotNull;
 
-public class SomeBean2
+public class BeforeBeanDiscoveryBean
 {
 
-	private static final Logger L = Logger.getLogger( "SomeBean2" );
+	private static final Logger L = Logger.getLogger( BeforeBeanDiscoveryBean.class.getSimpleName() );
 
 	@PersistenceContext( unitName = "PU1" )
 	private EntityManager em1;
