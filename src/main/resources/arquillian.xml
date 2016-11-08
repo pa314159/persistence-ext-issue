@@ -11,7 +11,7 @@
 
 	<container qualifier="wildfly-dist">
 		<configuration>
-			<property name="jbossHome">build/wildfly-10.0.0.Final</property>
+			<property name="jbossHome">build/wildfly-10.1.0.Final</property>
 		</configuration>
 	</container>
 

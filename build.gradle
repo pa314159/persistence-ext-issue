@@ -3,7 +3,9 @@ buildscript {
 	repositories {
 		mavenCentral()
 	}
-	dependencies { classpath( 'io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE' ) }
+	dependencies {
+		classpath( 'io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE' )
+	}
 }
 
 apply( plugin: 'java' )
@@ -44,13 +46,13 @@ test { enabled = false }
 task( 'test-report', type: TestReport ) { rep ->
 	destinationDir = file( "$reportsDir/all-tests" )
 
-	tasks.withType( Test ) {
-		rep.dependsOn( it )
-		reportOn( it )
+	tasks.withType( Test ) { tst ->
+		rep.dependsOn( tst )
+		reportOn( tst )
 	}
 }
 
-tasks.withType( Test ) {
+tasks.withType( Test ) { tst ->
 	dependsOn( classes )
 	outputs.upToDateWhen { false }
 	
@@ -63,7 +65,7 @@ tasks.withType( Test ) {
 	ignoreFailures = true
 	
 	reports.html.enabled = false
-	reports.junitXml.destination = file( "$testResultsDir/xml/$it.name" )
+	reports.junitXml.destination = file( "$testResultsDir/xml/${tst.name}" )
 }
 
 check.dependsOn( 'test-report' )
@@ -76,7 +78,7 @@ configurations {
 }
 
 dependencies {
-	wildflyDist( 'org.wildfly:wildfly-dist:10.0.0.Final@zip' )
+	wildflyDist( 'org.wildfly:wildfly-dist:10.1.0.Final@zip' )
 
 	wildflyRuntime( configurations.runtime )
 	wildflyRuntime( 'org.wildfly.arquillian:wildfly-arquillian-container-managed' )
@@ -103,7 +105,7 @@ configurations {
 }
 
 dependencies {
-	glassfishDist( 'fish.payara.distributions:payara:4.1.1.162@zip' )
+	glassfishDist( 'fish.payara.distributions:payara:4.1.1.163@zip' )
 
 	glassfishRuntime( configurations.testRuntime )
 	glassfishRuntime( 'org.jboss.arquillian.container:arquillian-glassfish-managed-3.1' )

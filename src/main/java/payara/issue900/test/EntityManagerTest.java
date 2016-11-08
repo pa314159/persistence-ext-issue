@@ -8,7 +8,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.deltaspike.core.util.bean.BeanBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
