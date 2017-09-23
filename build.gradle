@@ -1,11 +1,7 @@
 
 buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath( 'io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE' )
-	}
+	repositories { mavenCentral() }
+	dependencies { classpath( 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE' ) }
 }
 
 apply( plugin: 'java' )
@@ -13,7 +9,7 @@ apply( plugin: 'eclipse' )
 apply( from: 'dependencies.gradle' )
 
 sourceSets.all {
-	output.resourcesDir = output.classesDir
+	output.resourcesDir = output.classesDirs[0]
 
 	dependencies.add( compileOnlyConfigurationName, 'javax:javaee-api' )
 }
@@ -55,15 +51,15 @@ task( 'test-report', type: TestReport ) { rep ->
 tasks.withType( Test ) { tst ->
 	dependsOn( classes )
 	outputs.upToDateWhen { false }
-	
+
 	include( '**/*Test.class' )
-	
-	testClassesDir = sourceSets.main.output.classesDir
+
+	testClassesDirs = sourceSets.main.output.classesDirs;
 	classpath = sourceSets.main.output
-	
+
 	testLogging.showStandardStreams = true
 	ignoreFailures = true
-	
+
 	reports.html.enabled = false
 	reports.junitXml.destination = file( "$testResultsDir/xml/${tst.name}" )
 }
@@ -78,7 +74,7 @@ configurations {
 }
 
 dependencies {
-	wildflyDist( 'org.wildfly:wildfly-dist:10.1.0.Final@zip' )
+	wildflyDist( "org.wildfly:wildfly-dist:${versions.wildfly}@zip" )
 
 	wildflyRuntime( configurations.runtime )
 	wildflyRuntime( 'org.wildfly.arquillian:wildfly-arquillian-container-managed' )
@@ -105,7 +101,7 @@ configurations {
 }
 
 dependencies {
-	glassfishDist( 'fish.payara.distributions:payara:4.1.1.163@zip' )
+	glassfishDist( "fish.payara.distributions:payara:${versions.payara}@zip" )
 
 	glassfishRuntime( configurations.testRuntime )
 	glassfishRuntime( 'org.jboss.arquillian.container:arquillian-glassfish-managed-3.1' )
@@ -129,8 +125,9 @@ task( 'glassfish-test', type: Test ) {
 eclipse {
 	classpath {
 		plusConfigurations += [
-//			configurations.wildflyRuntime,
+			//			configurations.wildflyRuntime,
 			configurations.glassfishRuntime,
 		]
 	}
 }
+

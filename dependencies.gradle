@@ -1,9 +1,16 @@
 apply( plugin: 'io.spring.dependency-management' )
 
+ext {
+	versions = [
+		payara: '4.1.2.173',
+		wildfly: '10.1.0.Final',
+	]
+	
+}
 dependencyManagement {
 	imports {
-		mavenBom( 'org.jboss.arquillian:arquillian-bom:1.1.11.Final' )
-		mavenBom( 'org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-bom:2.2.4' )
+		mavenBom( 'org.jboss.arquillian:arquillian-bom:1.1.13.Final' )
+		mavenBom( 'org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-bom:2.2.6' )
 	}
 
 	dependencies {
@@ -11,16 +18,15 @@ dependencyManagement {
 		dependency( 'commons-io:commons-io:2.5' )
 		dependency( 'junit:junit:4.12' )
 
-		// don't switch to 1.0.0.Final, it fails to shutdown the AS
-		dependencySet( group: 'org.jboss.arquillian.container', version: '1.0.0.CR4' ) {
+		dependencySet( group: 'org.jboss.arquillian.container', version: '1.0.1' ) {
 			entry( 'arquillian-glassfish-managed-3.1' )
 			entry( 'arquillian-glassfish-remote-3.1' )
 		}
-		dependencySet( group: 'org.wildfly.arquillian', version: '2.0.0.Final' ) {
+		dependencySet( group: 'org.wildfly.arquillian', version: '2.1.0.Final' ) {
 			entry( 'wildfly-arquillian-container-managed' )
 			entry( 'wildfly-arquillian-container-remote' )
 		}
-		dependencySet( group: 'org.apache.deltaspike.core', version: '1.7.2' ) {
+		dependencySet( group: 'org.apache.deltaspike.core', version: '1.8.0' ) {
 			entry( 'deltaspike-core-api' )
 			entry( 'deltaspike-core-impl' )
 		}
